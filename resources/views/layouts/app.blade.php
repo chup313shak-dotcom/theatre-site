@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Театр имени А.С. Пушкина')</title>
+    <title>@yield('title', 'Театр имени Аяза Гилязова')</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,7 @@
                     <i class="fas fa-theater-masks text-3xl"></i>
                     <div>
                         <h1 class="text-xl font-bold">Театр имени</h1>
-                        <p class="text-sm opacity-90">А.С. Пушкина</p>
+                        <p class="text-sm opacity-90">Аяза Гилязова</p>
                     </div>
                 </a>
                 
@@ -113,7 +113,7 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Театр имени А.С. Пушкина</h3>
+                    <h3 class="text-lg font-bold mb-4">Театр имени Аяза Гилязова</h3>
                     <p class="text-sm text-gray-400">Ведущий театр республики, хранитель культурных традиций.</p>
                 </div>
                 <div>
@@ -138,7 +138,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-6 text-center text-sm text-gray-400">
-                <p>&copy; {{ date('Y') }} Театр имени А.С. Пушкина. Все права защищены.</p>
+                <p>&copy; {{ date('Y') }} Театр имени Аяза Гилязова. Все права защищены.</p>
             </div>
         </div>
     </footer>
