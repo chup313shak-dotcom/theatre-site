@@ -56,6 +56,11 @@
                             </button>
                             <div x-show="open" @click.away="open = false" x-cloak 
                                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 text-gray-800">
+                                @if(Auth::user()->isAdmin())
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-red-50 text-red-700 font-bold border-b border-gray-100">
+                                        <i class="fas fa-user-shield mr-2"></i> Админ-панель
+                                    </a>
+                                @endif
                                 <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
                                     <i class="fas fa-tachometer-alt mr-2"></i> Личный кабинет
                                 </a>

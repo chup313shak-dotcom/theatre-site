@@ -102,3 +102,33 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::get('/profile/download-ticket/{ticketId}', [ProfileController::class, 'downloadTicket'])->name('profile.download.ticket');
 });
+
+// ============ АДМИН ПАНЕЛЬ ============
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    
+    // Спектакли
+    Route::resource('spectacles', App\Http\Controllers\Admin\SpectacleController::class);
+    
+    // Артисты
+    Route::resource('actors', App\Http\Controllers\Admin\ActorController::class);
+    
+    // Новости
+    Route::resource('news', App\Http\Controllers\Admin\NewsController::class);
+    
+    // Афиша (Показы)
+    Route::resource('shows', App\Http\Controllers\Admin\ShowController::class);
+    
+    // Заказы
+    Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.status');
+    
+    // Отзывы
+    Route::get('/reviews', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/{review}/toggle', [App\Http\Controllers\Admin\ReviewController::class, 'toggleStatus'])->name('reviews.toggle');
+    Route::delete('/reviews/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+    
+    // Пользователи
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/role', [App\Http\Controllers\Admin\UserController::class, 'updateRole'])->name('users.role');
+});
