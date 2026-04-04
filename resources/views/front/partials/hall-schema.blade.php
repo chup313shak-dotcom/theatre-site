@@ -1,94 +1,219 @@
 <!-- resources/views/front/partials/hall-schema.blade.php -->
 <div x-data="hallSchema()" x-init="init()" class="hall-schema">
-    <div class="text-center mb-6">
-        <h3 class="text-xl font-bold">Схема зала</h3>
-        <p class="text-gray-600">Выберите места</p>
+    <div class="text-center mb-5">
+        <h3 class="page-title">Схема зала</h3>
+        <p class="page-subtitle">Выберите подходящие места на схеме</p>
     </div>
 
     <!-- Сцена -->
-    <div class="stage text-center mb-8">
-        <div class="bg-gradient-to-r from-gray-700 to-gray-900 text-white py-3 rounded-lg w-3/4 mx-auto shadow-lg">
-            <i class="fas fa-microphone-alt mr-2"></i>СЦЕНА
+    <div class="stage-container">
+        <div class="stage-box">
+            <i class="fas fa-theater-masks mr-2"></i> СЦЕНА
         </div>
     </div>
 
     <!-- Зрительный зал -->
-    <div class="hall flex flex-col items-center space-y-2 overflow-x-auto pb-4">
+    <div class="hall-container">
         <template x-for="row in hallSchema.rows" :key="row.row">
-            <div class="flex justify-center items-center space-x-2 min-w-max">
-                <div class="w-12 text-right font-bold text-gray-700" x-text="row.row"></div>
-                <div class="flex space-x-1">
+            <div class="hall-row">
+                <div class="row-number" x-text="row.row"></div>
+                <div class="seats-row">
                     <template x-for="seat in row.seats" :key="seat.number">
                         <button 
-                            @click="toggleSeat(row.row, seat.number)"
+                            @click="toggleSeat(row.row, seat.number, seat.price)"
+                            :title="'Ряд ' + row.row + ', Место ' + seat.number + ' - ' + seat.price + ' ₽'"
                             :class="{
-                                'bg-green-500 hover:bg-green-600 shadow-lg transform scale-105': isSelected(row.row, seat.number),
-                                'bg-gray-300 cursor-not-allowed opacity-50': isOccupied(row.row, seat.number),
-                                'bg-blue-500 hover:bg-blue-600 hover:shadow-md': !isSelected(row.row, seat.number) && !isOccupied(row.row, seat.number)
+                                'seat-selected': isSelected(row.row, seat.number),
+                                'seat-occupied': isOccupied(row.row, seat.number),
+                                'seat-available': !isSelected(row.row, seat.number) && !isOccupied(row.row, seat.number)
                             }"
                             :disabled="isOccupied(row.row, seat.number)"
-                            class="w-10 h-10 rounded-lg text-white font-bold transition-all duration-200 text-sm"
+                            class="seat-btn"
                             x-text="seat.number"
                         ></button>
                     </template>
                 </div>
+                <div class="row-number" x-text="row.row"></div>
             </div>
         </template>
     </div>
 
     <!-- Легенда -->
-    <div class="legend flex justify-center space-x-6 mt-8 py-4 border-t border-gray-200">
-        <div class="flex items-center">
-            <div class="w-6 h-6 bg-blue-500 rounded mr-2"></div>
-            <span class="text-sm">Свободно</span>
+    <div class="hall-legend">
+        <div class="legend-item">
+            <div class="legend-color seat-available"></div>
+            <span>Свободно</span>
         </div>
-        <div class="flex items-center">
-            <div class="w-6 h-6 bg-green-500 rounded mr-2"></div>
-            <span class="text-sm">Выбрано</span>
+        <div class="legend-item">
+            <div class="legend-color seat-selected"></div>
+            <span>Выбрано</span>
         </div>
-        <div class="flex items-center">
-            <div class="w-6 h-6 bg-gray-300 rounded mr-2"></div>
-            <span class="text-sm">Занято</span>
+        <div class="legend-item">
+            <div class="legend-color seat-occupied"></div>
+            <span>Занято</span>
         </div>
     </div>
 
     <!-- Информация о выбранных местах -->
     <div x-show="selectedSeats.length > 0" 
          x-transition.duration.300ms
-         class="selected-info mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
-        <h4 class="font-bold text-gray-800 mb-3">Выбранные места:</h4>
-        <div class="flex flex-wrap gap-2 mb-4">
-            <template x-for="seat in selectedSeats">
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center">
-                    <i class="fas fa-chair mr-1"></i>
-                    <span x-text="seat.row + seat.seat"></span>
-                    <button @click="removeSeat(seat.row, seat.seat)" class="ml-2 text-green-600 hover:text-green-800">
-                        <i class="fas fa-times-circle"></i>
-                    </button>
-                </span>
-            </template>
-        </div>
-        <div class="flex justify-between items-center">
-            <div class="text-sm text-gray-600">
-                <i class="fas fa-clock mr-1"></i>
-                Время резерва: <span x-text="formatTime(reservationTimeout)"></span>
+         class="selected-info-card mt-5">
+        <div class="card">
+            <div class="card-header bg-primary-dark text-white">
+                <h4 class="card-title mb-0"><i class="fas fa-shopping-basket mr-2"></i> Ваш выбор</h4>
             </div>
-            <button @click="confirmSelection" 
-                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors shadow-md">
-                <i class="fas fa-ticket-alt mr-2"></i>
-                Подтвердить выбор ( <span x-text="selectedSeats.length"></span> )
-            </button>
+            <div class="card-body">
+                <div class="selected-seats-grid">
+                    <template x-for="seat in selectedSeats" :key="seat.row + '_' + seat.seat">
+                        <div class="seat-ticket-mini">
+                            <div class="ticket-info">
+                                <span class="ticket-place">Ряд <span x-text="seat.row"></span>, Место <span x-text="seat.seat"></span></span>
+                                <span class="ticket-price" x-text="seat.price + ' ₽'"></span>
+                            </div>
+                            <button @click="removeSeat(seat.row, seat.seat)" class="btn-remove-ticket" title="Убрать">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+                
+                <div class="selection-footer mt-4">
+                    <div class="selection-stats">
+                        <div class="stat-line">
+                            <span>Билетов:</span>
+                            <strong x-text="selectedSeats.length"></strong>
+                        </div>
+                        <div class="stat-line total">
+                            <span>К оплате:</span>
+                            <strong x-text="totalPrice + ' ₽'"></strong>
+                        </div>
+                    </div>
+                    
+                    <div class="selection-actions">
+                        <div class="timer-display mb-3">
+                            <i class="fas fa-hourglass-half mr-2"></i>
+                            Резерв на: <span x-text="formatTime(reservationTimeout)" class="time-value"></span>
+                        </div>
+                        <button @click="confirmSelection" class="btn btn-primary btn-lg btn-block">
+                            Оформить заказ — <span x-text="totalPrice + ' ₽'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
     <!-- Сообщение о необходимости авторизации -->
     <div x-show="!isAuthenticated && selectedSeats.length > 0" 
-         class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
-        <i class="fas fa-exclamation-triangle mr-2"></i>
-        Для покупки билетов необходимо <a href="{{ route('login') }}" class="underline font-bold">войти</a> или 
-        <a href="{{ route('register') }}" class="underline font-bold">зарегистрироваться</a>
+         class="alert alert-warning mt-4 text-center">
+        <i class="fas fa-user-lock mr-2"></i>
+        Чтобы продолжить, пожалуйста <a href="{{ route('login') }}" class="font-bold underline">войдите</a> или 
+        <a href="{{ route('register') }}" class="font-bold underline">зарегистрируйтесь</a>
     </div>
 </div>
+
+<style>
+    .hall-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 20px 0;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    .hall-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        min-width: min-content;
+    }
+    .seats-row {
+        display: flex;
+        gap: 6px;
+    }
+    .row-number {
+        width: 25px;
+        font-weight: 700;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    .seat-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .seat-available { background-color: var(--primary-color); color: white; }
+    .seat-available:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+    .seat-selected { background-color: var(--success-color); color: white; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
+    .seat-occupied { background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; }
+    
+    .stage-container { margin-bottom: 40px; }
+    .stage-box {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 15px;
+        background: linear-gradient(to bottom, #f8f9fa, #dee2e6);
+        border-bottom: 4px solid var(--primary-color);
+        border-radius: 0 0 50% 50% / 0 0 20px 20px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        letter-spacing: 5px;
+    }
+    
+    .hall-legend {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 30px;
+        padding: 20px;
+        background-color: var(--gray-light);
+        border-radius: 12px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+    .legend-color { width: 20px; height: 20px; border-radius: 4px; }
+    
+    .selected-seats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    .seat-ticket-mini {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background-color: var(--gray-light);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+    .ticket-place { display: block; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+    .ticket-price { font-weight: 600; color: var(--primary-color); font-size: 0.85rem; }
+    .btn-remove-ticket { background: none; border: none; color: #adb5bd; cursor: pointer; transition: 0.2s; }
+    .btn-remove-ticket:hover { color: var(--error-color); }
+    
+    .selection-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-top: 20px;
+        border-top: 2px solid var(--gray-medium);
+    }
+    .stat-line { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 5px; }
+    .stat-line.total { font-size: 1.5rem; color: var(--primary-dark); }
+    .stat-line.total strong { color: var(--primary-color); }
+    
+    .time-value { color: var(--primary-color); font-weight: 800; }
+</style>
 
 <script>
 function hallSchema() {
@@ -96,6 +221,7 @@ function hallSchema() {
         showId: {{ $show->id ?? 0 }},
         hallSchema: { rows: [] },
         selectedSeats: [],
+        totalPrice: 0,
         occupiedSeats: {},
         reservationTimeout: 600, // 10 минут в секундах
         isAuthenticated: {{ auth()->check() ? 'true' : 'false' }},
@@ -123,7 +249,7 @@ function hallSchema() {
                 this.occupiedSeats = {};
                 this.hallSchema.rows.forEach(row => {
                     row.seats.forEach(seat => {
-                        if (seat.status === 'occupied' || seat.status === 'reserved') {
+                        if (seat.status === 'sold' || seat.status === 'reserved' || seat.status === 'occupied') {
                             this.occupiedSeats[`${row.row}_${seat.number}`] = true;
                         }
                     });
@@ -141,7 +267,7 @@ function hallSchema() {
             return this.occupiedSeats[`${row}_${seat}`] === true;
         },
         
-        toggleSeat(row, seat) {
+        toggleSeat(row, seat, price) {
             if (!this.isAuthenticated) {
                 alert('Для выбора мест необходимо войти в систему');
                 window.location.href = '{{ route("login") }}';
@@ -152,8 +278,10 @@ function hallSchema() {
             
             const index = this.selectedSeats.findIndex(s => s.row === row && s.seat === seat);
             if (index === -1) {
-                this.selectedSeats.push({ row, seat });
+                this.selectedSeats.push({ row, seat, price });
+                this.totalPrice += price;
             } else {
+                this.totalPrice -= this.selectedSeats[index].price;
                 this.selectedSeats.splice(index, 1);
             }
         },
@@ -161,6 +289,7 @@ function hallSchema() {
         removeSeat(row, seat) {
             const index = this.selectedSeats.findIndex(s => s.row === row && s.seat === seat);
             if (index !== -1) {
+                this.totalPrice -= this.selectedSeats[index].price;
                 this.selectedSeats.splice(index, 1);
             }
         },

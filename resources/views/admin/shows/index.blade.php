@@ -4,56 +4,54 @@
 @section('header', 'Управление афишей')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h3 class="font-bold text-gray-800">Расписание показов</h3>
-        <a href="{{ route('admin.shows.create') }}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center text-sm">
-            <i class="fas fa-plus mr-2"></i> Добавить показ
+<div class="admin-card">
+    <div class="card-header">
+        <h3 class="card-title">Список ближайших сеансов</h3>
+        <a href="{{ route('admin.shows.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить сеанс
         </a>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-left">
+    <div class="table-responsive">
+        <table class="table admin-table">
             <thead>
-                <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
-                    <th class="px-6 py-3">Дата и время</th>
-                    <th class="px-6 py-3">Спектакль</th>
-                    <th class="px-6 py-3">Место</th>
-                    <th class="px-6 py-3">Статус</th>
-                    <th class="px-6 py-3">Действия</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Спектакль</th>
+                    <th>Дата и время</th>
+                    <th>Места</th>
+                    <th>Цена (мин)</th>
+                    <th class="text-right">Действия</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody>
                 @forelse($shows as $show)
-                    <tr class="hover:bg-gray-50/50 transition">
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-bold text-gray-900">{{ $show->start_time->format('d.m.Y') }}</div>
-                            <div class="text-xs text-red-600 font-bold">{{ $show->start_time->format('H:i') }}</div>
+                    <tr>
+                        <td>#{{ $show->id }}</td>
+                        <td>
+                            <div class="admin-table-title">{{ $show->spectacle->title }}</div>
+                            <div class="admin-table-subtitle">{{ $show->spectacle->genre }}</div>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-medium text-gray-900">{{ $show->spectacle->title }}</div>
+                        <td>
+                            <div class="show-datetime">
+                                <i class="far fa-calendar-alt text-primary"></i> 
+                                <strong>{{ $show->start_time->format('d.m.Y') }}</strong>
+                                <span class="text-muted ml-2">{{ $show->start_time->format('H:i') }}</span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-600">
-                            {{ $show->venue ?? 'Основная сцена' }}
+                        <td>
+                            <span class="badge badge-primary">Всего: 100</span>
                         </td>
-                        <td class="px-6 py-4 text-sm">
-                            @if($show->start_time->isPast())
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">Завершен</span>
-                            @elseif($show->is_active)
-                                <span class="px-2 py-1 bg-green-50 text-green-700 rounded text-xs">Активен</span>
-                            @else
-                                <span class="px-2 py-1 bg-red-50 text-red-700 rounded text-xs">Приостановлен</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-sm">
-                            <div class="flex items-center space-x-3">
-                                <a href="{{ route('admin.shows.edit', $show->id) }}" class="text-blue-600 hover:text-blue-800 transition">
+                        <td>{{ number_format($show->base_price ?? 500, 0, '.', ' ') }} ₽</td>
+                        <td class="text-right">
+                            <div class="admin-actions">
+                                <a href="{{ route('admin.shows.edit', $show->id) }}" class="action-btn edit-btn" title="Редактировать">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.shows.destroy', $show->id) }}" method="POST" onsubmit="return confirm('Вы уверены?')">
+                                <form action="{{ route('admin.shows.destroy', $show->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Вы уверены?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition">
+                                    <button type="submit" class="action-btn delete-btn" title="Удалить">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -62,7 +60,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">Показов не запланировано</td>
+                        <td colspan="6" class="text-center py-5 text-muted italic">Сеансов пока нет</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -70,9 +68,13 @@
     </div>
 
     @if($shows->hasPages())
-        <div class="px-6 py-4 border-t border-gray-100">
+        <div class="pagination-container">
             {{ $shows->links() }}
         </div>
     @endif
 </div>
+
+<style>
+    .show-datetime i { margin-right: 8px; font-size: 1.1rem; }
+</style>
 @endsection

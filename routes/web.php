@@ -129,6 +129,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/reviews/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
     
     // Пользователи
-    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{user}/role', [App\Http\Controllers\Admin\UserController::class, 'updateRole'])->name('users.role');
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
 });

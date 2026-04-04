@@ -4,67 +4,87 @@
 @section('header', 'Управление труппой')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h3 class="font-bold text-gray-800">Список артистов</h3>
-        <a href="{{ route('admin.actors.create') }}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center text-sm">
-            <i class="fas fa-plus mr-2"></i> Добавить артиста
+<div class="admin-card">
+    <div class="card-header">
+        <h3 class="card-title">Список артистов</h3>
+        <a href="{{ route('admin.actors.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить артиста
         </a>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-left">
-            <thead>
-                <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
-                    <th class="px-6 py-3">Фото</th>
-                    <th class="px-6 py-3">Имя</th>
-                    <th class="px-6 py-3">Категория</th>
-                    <th class="px-6 py-3">Действия</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse($actors as $actor)
-                    <tr class="hover:bg-gray-50/50 transition group">
-                        <td class="px-6 py-4">
-                            <img src="{{ $actor->photo ?? '/images/default-actor.jpg' }}" 
-                                 class="w-10 h-10 object-cover rounded-full shadow-sm" 
-                                 alt="{{ $actor->name }}">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-bold text-gray-900">{{ $actor->name }}</div>
-                            <div class="text-xs text-gray-500">{{ $actor->name_tatar }}</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-600">
-                            <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs">
-                                {{ $actor->category ?? 'Артист' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm">
-                            <div class="flex items-center space-x-3">
-                                <a href="{{ route('admin.actors.edit', $actor->id) }}" class="text-blue-600 hover:text-blue-800 transition">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.actors.destroy', $actor->id) }}" method="POST" onsubmit="return confirm('Вы уверены?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table admin-table">
+                <thead>
                     <tr>
-                        <td colspan="4" class="px-6 py-10 text-center text-gray-500 italic">Артистов пока нет</td>
+                        <th width="80">Фото</th>
+                        <th>Имя</th>
+                        <th>Категория</th>
+                        <th class="text-right">Действия</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($actors as $actor)
+                        <tr>
+                            <td>
+                                <div class="admin-table-img">
+                                    @php
+                                        $photoUrl = asset('images/default-actor.jpg');
+                                        if ($actor->photo) {
+                                            if (str_starts_with($actor->photo, 'http')) {
+                                                $photoUrl = $actor->photo;
+                                            } else {
+                                                // Убираем лишние слэши в начале и проверяем существование
+                                                $cleanPath = ltrim($actor->photo, '/');
+                                                if (file_exists(public_path($cleanPath))) {
+                                                    $photoUrl = asset($cleanPath);
+                                                } elseif (file_exists(public_path('images/actors/' . basename($cleanPath)))) {
+                                                    $photoUrl = asset('images/actors/' . basename($cleanPath));
+                                                } else {
+                                                    $photoUrl = asset('storage/' . $cleanPath);
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    <img src="{{ $photoUrl }}" alt="{{ $actor->name }}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="admin-table-title">{{ $actor->name }}</div>
+                                <div class="admin-table-subtitle">{{ $actor->name_tatar }}</div>
+                            </td>
+                            <td>
+                                <span class="badge badge-primary">
+                                    {{ $actor->category ?? 'Артист' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="admin-actions">
+                                    <a href="{{ route('admin.actors.edit', $actor->id) }}" class="action-btn edit-btn" title="Редактировать">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.actors.destroy', $actor->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Вы уверены?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn delete-btn" title="Удалить">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center italic">Артистов пока нет</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     @if($actors->hasPages())
-        <div class="px-6 py-4 border-t border-gray-100">
+        <div class="pagination-container">
             {{ $actors->links() }}
         </div>
     @endif

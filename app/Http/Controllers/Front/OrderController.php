@@ -41,6 +41,7 @@ class OrderController extends Controller
         
         foreach ($reservations as $reservation) {
             $price = $show->getSeatPrice($reservation->row, $reservation->seat);
+            $reservation->price = $price; // Прикрепляем цену к объекту
             $totalAmount += $price;
         }
         

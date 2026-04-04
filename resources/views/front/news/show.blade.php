@@ -1,104 +1,107 @@
+<!-- resources/views/front/news/show.blade.php -->
 @extends('layouts.app')
 
 @section('title', $news->title)
 
 @section('content')
-<div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- Заголовок -->
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold mb-4">{{ $news->title }}</h1>
-            <div class="flex items-center text-gray-500 text-sm">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span>{{ $news->published_at->format('d.m.Y') }}</span>
+<div class="container">
+    <article class="news-detail card">
+        <!-- Заголовок и мета -->
+        <header class="news-header-detail">
+            <h1 class="page-title">{{ $news->title }}</h1>
+            <div class="news-meta-detail">
+                <span class="meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    {{ $news->published_at->format('d.m.Y') }}
+                </span>
                 @if($news->title_tatar)
-                    <span class="mx-2">•</span>
-                    <i class="fas fa-language mr-2"></i>
-                    <span>{{ $news->title_tatar }}</span>
+                    <span class="meta-separator">•</span>
+                    <span class="meta-item">
+                        <i class="fas fa-language"></i>
+                        {{ $news->title_tatar }}
+                    </span>
                 @endif
             </div>
-        </div>
+        </header>
         
         <!-- Изображение -->
         @if($news->image)
-            <div class="mb-8">
-                <img src="{{ $news->image }}" alt="{{ $news->title }}" class="w-full rounded-lg shadow-md">
+            <div class="news-image-detail">
+                <img src="{{ $news->image }}" alt="{{ $news->title }}" class="full-width-image">
             </div>
         @endif
         
         <!-- Контент -->
-        <div class="prose max-w-none mb-8">
+        <div class="news-content-detail prose">
             {!! $news->content !!}
         </div>
         
         <!-- Кнопка назад -->
-        <div class="mt-8 pt-6 border-t">
-            <a href="{{ route('news.index') }}" class="inline-flex items-center text-red-600 hover:text-red-700">
-                <i class="fas fa-arrow-left mr-2"></i>
+        <footer class="news-footer-detail">
+            <a href="{{ route('news.index') }}" class="btn btn-outline">
+                <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
                 Назад к новостям
             </a>
-        </div>
-        
-        <!-- Похожие новости -->
-        @if($relatedNews->count() > 0)
-            <div class="mt-12">
-                <h3 class="text-2xl font-bold mb-6">Похожие новости</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach($relatedNews as $related)
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+        </footer>
+    </article>
+    
+    <!-- Похожие новости -->
+    @if($relatedNews->count() > 0)
+        <section class="section related-news">
+            <h3 class="section-title">Другие новости</h3>
+            <div class="card-grid">
+                @foreach($relatedNews as $related)
+                    <article class="card news-card-mini">
+                        <div class="card-image-wrapper">
                             @if($related->image)
-                                <img src="{{ $related->image }}" alt="{{ $related->title }}" class="w-full h-32 object-cover">
+                                <img src="{{ $related->image }}" alt="{{ $related->title }}" class="card-image">
+                            @else
+                                <div class="news-placeholder-mini">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
                             @endif
-                            <div class="p-4">
-                                <p class="text-xs text-gray-500 mb-1">{{ $related->published_at->format('d.m.Y') }}</p>
-                                <h4 class="font-bold mb-2 line-clamp-2">{{ $related->title }}</h4>
-                                <a href="{{ route('news.show', $related->id) }}" class="text-red-600 text-sm hover:underline">
-                                    Читать →
-                                </a>
-                            </div>
                         </div>
-                    @endforeach
-                </div>
+                        <div class="card-body">
+                            <span class="news-date-mini">{{ $related->published_at->format('d.m.Y') }}</span>
+                            <h4 class="card-title-mini">{{ Str::limit($related->title, 60) }}</h4>
+                            <a href="{{ route('news.show', $related->id) }}" class="news-more-link">
+                                Читать →
+                            </a>
+                        </div>
+                    </article>
+                @endforeach
             </div>
-        @endif
-    </div>
+        </section>
+    @endif
 </div>
 
 <style>
-    .prose {
-        font-size: 1.125rem;
-        line-height: 1.75;
-    }
-    .prose p {
-        margin-bottom: 1.25rem;
-    }
-    .prose img {
-        max-width: 100%;
-        height: auto;
-        margin: 1.5rem 0;
-        border-radius: 0.5rem;
-    }
-    .prose h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 1.5rem 0 1rem;
-    }
-    .prose h3 {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin: 1.25rem 0 0.75rem;
-    }
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+.news-detail { margin-bottom: 60px; padding: 0; overflow: hidden; }
+.news-header-detail { padding: 50px 50px 30px; border-bottom: 1px solid var(--gray-medium); }
+.news-meta-detail { display: flex; align-items: center; gap: 20px; color: var(--text-muted); font-size: 0.95rem; margin-top: 15px; }
+.meta-item { display: flex; align-items: center; gap: 8px; }
+.meta-separator { color: var(--gray-medium); }
+.news-image-detail { width: 100%; max-height: 500px; overflow: hidden; }
+.full-width-image { width: 100%; height: 100%; object-fit: cover; }
+.news-content-detail { padding: 50px; font-size: 1.15rem; line-height: 1.8; color: var(--text-color); }
+.news-footer-detail { padding: 30px 50px 50px; border-top: 1px solid var(--gray-medium); }
+
+.prose p { margin-bottom: 1.5rem; }
+.prose h2 { font-size: 1.8rem; color: var(--primary-dark); margin: 2rem 0 1rem; }
+.prose h3 { font-size: 1.5rem; color: var(--primary-dark); margin: 1.5rem 0 0.8rem; }
+.prose ul, .prose ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+.prose li { margin-bottom: 0.5rem; }
+.prose blockquote { border-left: 4px solid var(--primary-color); padding-left: 20px; font-style: italic; color: var(--text-muted); margin: 2rem 0; }
+
+.news-card-mini .card-image-wrapper { height: 160px; }
+.news-date-mini { font-size: 0.8rem; color: var(--primary-color); font-weight: 600; margin-bottom: 8px; display: block; }
+.card-title-mini { font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 15px; line-height: 1.4; height: 3rem; overflow: hidden; }
+.news-placeholder-mini { width: 100%; height: 100%; background-color: var(--gray-medium); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--white); }
+
+@media (max-width: 768px) {
+    .news-header-detail, .news-content-detail, .news-footer-detail { padding: 25px; }
+    .news-meta-detail { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .meta-separator { display: none; }
+}
 </style>
 @endsection

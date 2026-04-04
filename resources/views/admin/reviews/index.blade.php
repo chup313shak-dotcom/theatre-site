@@ -1,72 +1,80 @@
 @extends('layouts.admin')
 
 @section('title', 'Отзывы')
-@section('header', 'Модерация отзывов зрителей')
+@section('header', 'Управление отзывами')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-    <div class="overflow-x-auto">
-        <table class="w-full text-left">
+<div class="admin-card">
+    <div class="card-header">
+        <h3 class="card-title">Список всех отзывов</h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table admin-table">
             <thead>
-                <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
-                    <th class="px-6 py-3">Зритель</th>
-                    <th class="px-6 py-3">Спектакль</th>
-                    <th class="px-6 py-3">Текст отзыва</th>
-                    <th class="px-6 py-3">Оценка</th>
-                    <th class="px-6 py-3">Статус</th>
-                    <th class="px-6 py-3">Действия</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Спектакль</th>
+                    <th>Оценка</th>
+                    <th>Текст отзыва</th>
+                    <th>Дата</th>
+                    <th class="text-right">Действия</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody>
                 @forelse($reviews as $review)
-                    <tr class="hover:bg-gray-50/50 transition">
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-bold text-gray-900">{{ $review->user->name }}</div>
-                            <div class="text-xs text-gray-500">{{ $review->created_at->format('d.m.Y') }}</div>
+                    <tr>
+                        <td>#{{ $review->id }}</td>
+                        <td>
+                            <div class="admin-table-title">{{ $review->user->name }}</div>
+                            <div class="admin-table-subtitle">{{ $review->user->email }}</div>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-700">{{ $review->spectacle->title }}</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-600 italic line-clamp-2">"{{ $review->content }}"</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex text-yellow-400">
-                                @for($i=0; $i<5; $i++)
-                                    <i class="fas fa-star {{ $i < $review->rating ? '' : 'opacity-20' }} text-xs"></i>
+                        <td>{{ $review->spectacle->title }}</td>
+                        <td>
+                            <div class="rating-stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-gray' }}"></i>
                                 @endfor
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            @if($review->is_approved)
-                                <span class="px-2 py-1 bg-green-50 text-green-700 rounded text-xs">Одобрен</span>
-                            @else
-                                <span class="px-2 py-1 bg-yellow-50 text-yellow-700 rounded text-xs">На модерации</span>
-                            @endif
+                        <td>
+                            <div class="review-text-preview" title="{{ $review->content }}">
+                                {{ Str::limit($review->content, 50) }}
+                            </div>
                         </td>
-                        <td class="px-6 py-4 text-sm">
-                            <div class="flex space-x-2">
-                                <form action="{{ route('admin.reviews.toggle', $review->id) }}" method="POST">
-                                    @csrf
-                                    <button class="text-blue-600 hover:underline">
-                                        {{ $review->is_approved ? 'Скрыть' : 'Одобрить' }}
-                                    </button>
-                                </form>
-                                <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" onsubmit="return confirm('Удалить отзыв?')">
+                        <td>{{ $review->created_at->format('d.m.Y H:i') }}</td>
+                        <td class="text-right">
+                            <div class="admin-actions">
+                                <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Вы уверены, что хотите удалить этот отзыв?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="action-btn delete-btn" title="Удалить">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-gray-500">Отзывов пока нет</td>
+                        <td colspan="7" class="text-center py-5 text-muted italic">Отзывов пока нет</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
+    @if($reviews->hasPages())
+        <div class="pagination-container">
+            {{ $reviews->links() }}
+        </div>
+    @endif
 </div>
+
+<style>
+    .text-warning { color: #ffc107; }
+    .text-gray { color: #dee2e6; }
+    .review-text-preview { max-width: 300px; font-size: 0.9rem; color: var(--text-muted); }
+</style>
 @endsection

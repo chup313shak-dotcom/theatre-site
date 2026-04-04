@@ -4,46 +4,61 @@
 @section('header', 'Новый артист')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-        <form action="{{ route('admin.actors.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
+<div class="admin-card">
+    <div class="card-header">
+        <h3 class="card-title">Добавление артиста в труппу</h3>
+    </div>
+
+    <div class="card-body">
+        <form action="{{ route('admin.actors.store') }}" method="POST" enctype="multipart/form-data" class="admin-form">
             @csrf
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700">Имя (RU)</label>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Имя (RU)</label>
                     <input type="text" name="name" required value="{{ old('name') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+                           class="form-control" placeholder="Напр: Иван Иванов">
+                    @error('name') <span class="form-hint text-error">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700">Имя (TAT)</label>
+                <div class="form-group">
+                    <label class="form-label">Имя (TAT)</label>
                     <input type="text" name="name_tatar" value="{{ old('name_tatar') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+                           class="form-control" placeholder="Напр: Иван Иванов (на татарском)">
+                    @error('name_tatar') <span class="form-hint text-error">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700">Категория (звание)</label>
-                    <input type="text" name="category" value="{{ old('category') }}" placeholder="Напр: Народный артист РТ"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+                <div class="form-group">
+                    <label class="form-label">Категория (звание)</label>
+                    <input type="text" name="category" value="{{ old('category') }}" 
+                           placeholder="Напр: Народный артист РТ"
+                           class="form-control">
+                    @error('category') <span class="form-hint text-error">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700">Фото</label>
-                    <input type="file" name="photo" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                <div class="form-group">
+                    <label class="form-label">Фото</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="photo" id="photo" class="file-input">
+                        <label for="photo" class="file-label">
+                            <i class="fas fa-upload mr-2"></i> Выбрать файл...
+                        </label>
+                    </div>
+                    <span class="form-hint">Рекомендуемый размер: 600x800px (JPG, PNG)</span>
                 </div>
             </div>
 
-            <div class="mt-6 space-y-2">
-                <label class="text-sm font-bold text-gray-700">Биография / Информация</label>
+            <div class="form-group mt-4">
+                <label class="form-label">Биография / Информация</label>
                 <textarea name="biography" rows="6" 
-                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">{{ old('biography') }}</textarea>
+                          class="form-control" placeholder="Краткая биография артиста...">{{ old('biography') }}</textarea>
+                @error('biography') <span class="form-hint text-error">{{ $message }}</span> @enderror
             </div>
 
-            <div class="mt-8 flex items-center justify-end space-x-4">
-                <a href="{{ route('admin.actors.index') }}" class="px-6 py-2 text-gray-600 hover:text-gray-800 transition">Отмена</a>
-                <button type="submit" class="bg-red-600 text-white px-8 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md">
-                    Добавить в труппу
+            <div class="form-actions">
+                <a href="{{ route('admin.actors.index') }}" class="btn btn-outline">Отмена</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save mr-2"></i> Сохранить артиста
                 </button>
             </div>
         </form>

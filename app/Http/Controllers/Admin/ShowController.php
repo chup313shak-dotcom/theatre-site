@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Show;
 use App\Models\Spectacle;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ShowController extends Controller
 {
@@ -21,21 +22,9 @@ class ShowController extends Controller
         return view('admin.shows.create', compact('spectacles'));
     }
 
-    public function store(Request $request)
+    private function getDefaultHallSchema()
     {
-        $validated = $request->validate([
-            'spectacle_id' => 'required|exists:spectacles,id',
-            'start_time' => 'required|date',
-            'venue' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
-        ]);
-
-        $validated['is_active'] = $request->has('is_active');
-        $spectacle = Spectacle::find($request->spectacle_id);
-        $validated['end_time'] = \Carbon\Carbon::parse($request->start_time)->addMinutes($spectacle->duration);
-
-        // Добавляем дефолтную схему зала и цены, если они не указаны (так как это обязательные поля)
-        $validated['hall_schema'] = [
+        return [
             'rows' => [
                 ['row' => '1', 'seats' => array_map(fn($i) => ['number' => $i, 'status' => 'available'], range(1, 20))],
                 ['row' => '2', 'seats' => array_map(fn($i) => ['number' => $i, 'status' => 'available'], range(1, 20))],
@@ -49,15 +38,37 @@ class ShowController extends Controller
                 ['row' => '10', 'seats' => array_map(fn($i) => ['number' => $i, 'status' => 'available'], range(1, 12))],
             ]
         ];
+    }
 
-        $validated['prices'] = [
+    private function getDefaultPrices()
+    {
+        return [
             'vip' => ['rows' => ['from' => 1, 'to' => 3], 'price' => 1500],
             'standard' => ['rows' => ['from' => 4, 'to' => 7], 'price' => 1000],
             'economy' => ['rows' => ['from' => 8, 'to' => 10], 'price' => 600],
             'default' => ['price' => 500]
         ];
+    }
 
-        Show::create($validated);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'spectacle_id' => 'required|exists:spectacles,id',
+            'start_time' => 'required|date',
+            'location' => 'nullable|string|max:255',
+        ]);
+
+        $spectacle = Spectacle::findOrFail($request->spectacle_id);
+        $startTime = Carbon::parse($request->start_time);
+        
+        Show::create([
+            'spectacle_id' => $request->spectacle_id,
+            'start_time' => $startTime,
+            'end_time' => $startTime->copy()->addMinutes($spectacle->duration),
+            'hall_schema' => $this->getDefaultHallSchema(),
+            'prices' => $this->getDefaultPrices(),
+            'is_active' => $request->has('is_active'),
+        ]);
 
         return redirect()->route('admin.shows.index')->with('success', 'Показ добавлен в афишу');
     }
@@ -70,17 +81,21 @@ class ShowController extends Controller
 
     public function update(Request $request, Show $show)
     {
-        $validated = $request->validate([
+        $request->validate([
             'spectacle_id' => 'required|exists:spectacles,id',
             'start_time' => 'required|date',
-            'venue' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-        $spectacle = Spectacle::find($request->spectacle_id);
-        $validated['end_time'] = \Carbon\Carbon::parse($request->start_time)->addMinutes($spectacle->duration);
+        $spectacle = Spectacle::findOrFail($request->spectacle_id);
+        $startTime = Carbon::parse($request->start_time);
 
-        $show->update($validated);
+        $show->update([
+            'spectacle_id' => $request->spectacle_id,
+            'start_time' => $startTime,
+            'end_time' => $startTime->copy()->addMinutes($spectacle->duration),
+            'is_active' => $request->has('is_active'),
+        ]);
 
         return redirect()->route('admin.shows.index')->with('success', 'Информация о показе обновлена');
     }

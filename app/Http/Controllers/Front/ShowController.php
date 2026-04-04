@@ -25,11 +25,16 @@ class ShowController extends Controller
         foreach ($hallSchema['rows'] as &$row) {
             foreach ($row['seats'] as &$seat) {
                 $key = $row['row'] . '_' . $seat['number'];
+                
+                // Статус места
                 if (isset($occupiedSeats[$key])) {
                     $seat['status'] = $occupiedSeats[$key];
                 } else {
                     $seat['status'] = 'available';
                 }
+                
+                // Цена места
+                $seat['price'] = $show->getSeatPrice($row['row'], $seat['number']);
             }
         }
 

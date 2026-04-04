@@ -1,3 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Base Custom CSS */
+:root {
+    --primary: #0047ab; /* Cobalt Blue */
+    --primary-dark: #002366; /* Royal Blue Dark */
+    --secondary: #f0f8ff; /* Alice Blue */
+    --text-color: #1a1a1a;
+    --bg-color: #ffffff;
+    --border-color: #e1e8ed;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
