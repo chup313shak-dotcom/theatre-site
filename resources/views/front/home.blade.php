@@ -78,7 +78,7 @@
     </div>
 </section>
 
-<div class="container mt-5">
+<div class="container mt-custom-xl">
     <!-- Ближайшие спектакли -->
     <section class="section upcoming-spectacles">
         <div class="section-header">
@@ -86,33 +86,56 @@
             <a href="{{ route('spectacles.index') }}" class="view-all-link">Все спектакли →</a>
         </div>
         
-        <div class="card-grid">
-            @foreach($upcomingShows as $spectacle)
-                <article class="card spectacle-card">
-                    <div class="card-image-wrapper">
-                        @php
-                            $pUrl = asset('images/default-poster.jpg');
-                            if ($spectacle->poster) {
-                                if (str_starts_with($spectacle->poster, 'http')) { $pUrl = $spectacle->poster; }
-                                else {
-                                    $cP = ltrim($spectacle->poster, '/');
-                                    $pUrl = file_exists(public_path($cP)) ? asset($cP) : asset('storage/' . $cP);
+        <div class="horizontal-scroll-wrapper">
+            <div class="card-horizontal-list">
+                @foreach($upcomingShows as $spectacle)
+                    <article class="card spectacle-card-h">
+                        <div class="card-image-wrapper">
+                            @php
+                                $pUrl = asset('images/default-poster.jpg');
+                                if ($spectacle->poster) {
+                                    if (str_starts_with($spectacle->poster, 'http')) { $pUrl = $spectacle->poster; }
+                                    else {
+                                        $cP = ltrim($spectacle->poster, '/');
+                                        $pUrl = file_exists(public_path($cP)) ? asset($cP) : asset('storage/' . $cP);
+                                    }
                                 }
-                            }
-                        @endphp
-                        <img src="{{ $pUrl }}" alt="{{ $spectacle->title }}" class="card-image">
-                        <div class="card-badge">Скоро</div>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">{{ $spectacle->title }}</h3>
-                        <div class="card-info">
-                            <p class="info-item"><i class="fas fa-user"></i> {{ $spectacle->director }}</p>
-                            <p class="info-item"><i class="fas fa-clock"></i> {{ floor($spectacle->duration / 60) }}ч {{ $spectacle->duration % 60 }}мин</p>
+                            @endphp
+                            <img src="{{ $pUrl }}" alt="{{ $spectacle->title }}" class="card-image">
+                            <div class="card-badge">Скоро</div>
                         </div>
-                        <a href="{{ route('spectacles.show', $spectacle->id) }}" class="btn btn-outline card-btn">Подробнее</a>
-                    </div>
-                </article>
-            @endforeach
+                        <div class="card-body">
+                            <h3 class="card-title">{{ $spectacle->title }}</h3>
+                            <div class="card-info">
+                                <p class="info-item"><i class="fas fa-user"></i> {{ $spectacle->director }}</p>
+                                <p class="info-item"><i class="fas fa-clock"></i> {{ floor($spectacle->duration / 60) }}ч {{ $spectacle->duration % 60 }}мин</p>
+                            </div>
+                            <a href="{{ route('spectacles.show', $spectacle->id) }}" class="btn btn-outline card-btn">Подробнее</a>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- О театре -->
+    <section class="section about-preview-section">
+        <div class="about-preview-grid">
+            <div class="about-preview-image"></div>
+            <div class="about-preview-content">
+                <h2 class="section-title">О театре</h2>
+                <p class="about-text">
+                    Набережночелнинский государственный татарский драматический театр имени Аяза Гилязова — это центр притяжения ценителей высокого искусства. Мы бережно храним культурное наследие и открываем новые горизонты в современной драматургии.
+                </p>
+                <p class="about-text">
+                    На сцене нашего театра оживают герои классических произведений и современные образы, близкие каждому зрителю. Каждая постановка — это глубокое погружение в мир эмоций и смыслов.
+                </p>
+                <div class="mt-4">
+                    <a href="/about" class="btn btn-primary">
+                        ПОДРОБНЕЕ О НАС
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
     
@@ -151,6 +174,73 @@
                     </div>
                 </article>
             @endforeach
+        </div>
+        
+        <div class="text-center mt-news-btn">
+            <a href="{{ route('news.index') }}" class="btn btn-outline btn-lg">
+                БОЛЬШЕ НОВОСТЕЙ
+            </a>
+        </div>
+    </section>
+
+    <!-- Наши артисты -->
+    <section class="section actors-preview-section mt-custom-xl">
+        <div class="section-header">
+            <h2 class="section-title">Наши артисты</h2>
+            <a href="{{ route('actors.index') }}" class="view-all-link">Все артисты →</a>
+        </div>
+        
+        <div class="card-grid grid-4">
+            @foreach($actors as $actor)
+                <article class="card actor-card">
+                    <div class="actor-image-wrapper">
+                        @php
+                            $photoUrl = asset('images/default-actor.jpg');
+                            if ($actor->photo) {
+                                if (str_starts_with($actor->photo, 'http')) {
+                                    $photoUrl = $actor->photo;
+                                } else {
+                                    $cleanPath = ltrim($actor->photo, '/');
+                                    if (file_exists(public_path($cleanPath))) {
+                                        $photoUrl = asset($cleanPath);
+                                    } elseif (file_exists(public_path('images/actors/' . basename($cleanPath)))) {
+                                        $photoUrl = asset('images/actors/' . basename($cleanPath));
+                                    } else {
+                                        $photoUrl = asset('storage/' . $cleanPath);
+                                    }
+                                }
+                            }
+                        @endphp
+                        <img src="{{ $photoUrl }}" alt="{{ $actor->name }}" class="actor-image">
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="actor-name">{{ $actor->name }}</h3>
+                        <p class="actor-role">{{ $actor->category ?? 'Артист' }}</p>
+                        <a href="{{ route('actors.show', $actor->id) }}" class="btn btn-link mt-2">Подробнее</a>
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Подписка на рассылку -->
+    <section class="section subscription-section mt-custom-xl">
+        <div class="subscription-container">
+            <div class="subscription-content">
+                <h2 class="subscription-title">Будьте в курсе событий</h2>
+                <p class="subscription-text">Подпишитесь на нашу рассылку, чтобы первыми узнавать о премьерах, специальных предложениях и новостях театра.</p>
+                
+                <form action="#" method="POST" class="subscription-form">
+                    @csrf
+                    <div class="subscription-input-group">
+                        <input type="email" name="email" placeholder="Ваш Email" required class="subscription-input">
+                        <button type="submit" class="btn btn-primary subscription-btn">
+                            ПОДПИСАТЬСЯ
+                        </button>
+                    </div>
+                </form>
+                <p class="subscription-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.</p>
+            </div>
         </div>
     </section>
 </div>

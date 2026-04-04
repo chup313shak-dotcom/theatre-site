@@ -221,6 +221,145 @@ ul {
     font-size: 1.1rem;
 }
 
+
+
+.subscription-container {
+    background-color: var(--primary-dark);
+    background-image: linear-gradient(135deg, var(--primary-dark) 0%, #001a4d 100%);
+    border-radius: 24px;
+    padding: 60px 40px;
+    color: var(--white);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.subscription-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50%;
+}
+
+.subscription-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.subscription-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.subscription-text {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.subscription-form {
+    margin-bottom: 20px;
+}
+
+.subscription-input-group {
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.subscription-input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.subscription-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.subscription-input:focus {
+    outline: none;
+}
+
+.subscription-btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+}
+
+.subscription-note {
+    font-size: 0.85rem;
+    opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+    .subscription-input-group {
+        flex-direction: column;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .subscription-input {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
+}
+
+
+.about-preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-preview-image {
+    height: 400px;
+    background-image: url('/images/hero/theatre.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.about-preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.about-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+}
+
+@media (max-width: 992px) {
+    .about-preview-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .about-preview-image {
+        height: 300px;
+    }
+}
+
+
 /* Hero Slider */
 .hero-slider {
     position: relative;
@@ -442,6 +581,22 @@ ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+}
+
+@media (max-width: 1200px) {
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .grid-4 {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .card {
@@ -1562,7 +1717,53 @@ ul {
 
 /* Utilities */
 .text-center { text-align: center; }
-.mt-4 { margin-top: 1.5rem; }
-.mb-4 { margin-bottom: 1.5rem; }
+.mt-custom-xl {
+    margin-top: 100px;
+}
+
+.mt-news-btn {
+    margin-top: 30px;
+}
+
+/* Horizontal Scroll */
+.horizontal-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-track {
+    background: var(--gray-light);
+    border-radius: 10px;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 10px;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+.card-horizontal-list {
+    display: flex;
+    gap: 30px;
+}
+
+.spectacle-card-h {
+    flex: 0 0 320px;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
 
 [x-cloak] { display: none !important; }
