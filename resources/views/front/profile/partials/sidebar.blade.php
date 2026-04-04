@@ -17,10 +17,6 @@
            class="profile-nav-link {{ request()->routeIs('profile.orders') || request()->routeIs('profile.order.details') ? 'active' : '' }}">
             <i class="fas fa-ticket-alt"></i> <span>Мои билеты</span>
         </a>
-        <a href="{{ route('profile.favorites') }}" 
-           class="profile-nav-link {{ request()->routeIs('profile.favorites') ? 'active' : '' }}">
-            <i class="fas fa-heart"></i> <span>Избранное</span>
-        </a>
         <a href="{{ route('profile.edit') }}" 
            class="profile-nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
             <i class="fas fa-user-edit"></i> <span>Редактировать профиль</span>

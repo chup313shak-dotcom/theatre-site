@@ -25,8 +25,8 @@
                 <a href="{{ route('home') }}" class="logo">
                     <i class="fas fa-theater-masks"></i>
                     <div class="logo-text">
-                        <h1 class="logo-title">Театр имени</h1>
-                        <p class="logo-subtitle">Аяза Гилязова</p>
+                        <h1 class="logo-title">Татарский драматический</h1>
+                        <p class="logo-subtitle">театр им. Аяза Гилязова</p>
                     </div>
                 </a>
                 
@@ -60,9 +60,6 @@
                                 </a>
                                 <a href="{{ route('profile.orders') }}" class="dropdown-item">
                                     <i class="fas fa-ticket-alt"></i> Мои билеты
-                                </a>
-                                <a href="{{ route('profile.favorites') }}" class="dropdown-item">
-                                    <i class="fas fa-heart"></i> Избранное
                                 </a>
                                 <hr class="dropdown-divider">
                                 <form method="POST" action="{{ route('logout') }}">
@@ -138,7 +135,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} Театр имени Аяза Гилязова. Все права защищены.</p>
+                <p>&copy; {{ date('Y') }} Татарский драматический театр имени Аяза Гилязова. Все права защищены.</p>
             </div>
         </div>
     </footer>

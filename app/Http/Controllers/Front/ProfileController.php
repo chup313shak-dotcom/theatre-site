@@ -30,10 +30,9 @@ class ProfileController extends Controller
             ->take(5)
             ->get();
             
-        $favoritesCount = $user->favorites->count();
         $ordersCount = Order::where('user_id', $user->id)->count();
         
-        return view('front.profile.index', compact('user', 'recentOrders', 'favoritesCount', 'ordersCount'));
+        return view('front.profile.index', compact('user', 'recentOrders', 'ordersCount'));
     }
 
     /**
@@ -61,22 +60,6 @@ class ProfileController extends Controller
             ->findOrFail($orderId);
             
         return view('front.profile.order-details', compact('order'));
-    }
-
-    /**
-     * Избранные спектакли
-     */
-    public function favorites()
-    {
-        $user = Auth::user();
-        $favorites = $user->favorites
-            ->with(['shows' => function($query) {
-                $query->where('start_time', '>', now())
-                    ->orderBy('start_time');
-            }])
-            ->paginate(12);
-            
-        return view('front.profile.favorites', compact('favorites'));
     }
 
     /**
@@ -120,7 +103,7 @@ class ProfileController extends Controller
             $user->is_subscribed = $request->boolean('is_subscribed');
         }
         
-        $user->save;
+        $user->save(); // Исправлено: добавлен вызов метода ()
         
         return redirect()->route('profile')->with('success', 'Профиль успешно обновлен');
     }

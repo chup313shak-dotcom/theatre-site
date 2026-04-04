@@ -37,7 +37,7 @@ Route::post('login', function (\Illuminate\Http\Request $request) {
     
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-        return redirect()->intended('/');
+        return redirect()->route('profile');
     }
     
     return back()->withErrors([
@@ -97,8 +97,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
     Route::get('/profile/order/{orderId}', [ProfileController::class, 'orderDetails'])->name('profile.order.details');
-    Route::get('/profile/favorites', [ProfileController::class, 'favorites'])->name('profile.favorites');
-    Route::post('/profile/favorites/{spectacleId}', [ProfileController::class, 'toggleFavorite'])->name('profile.favorites.toggle');
     Route::get('/profile/edit', [ProfileController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::get('/profile/download-ticket/{ticketId}', [ProfileController::class, 'downloadTicket'])->name('profile.download.ticket');
