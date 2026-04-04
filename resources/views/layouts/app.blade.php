@@ -114,20 +114,19 @@
         <div class="container footer-container">
             <div class="footer-grid">
                 <div class="footer-info">
-                    <h3 class="footer-title">Театр имени Аяза Гилязова</h3>
+                    <h3 class="footer-title">Татарский драматический театр имени Аяза Гилязова</h3>
                     <p class="footer-desc">Ведущий театр республики, хранитель культурных традиций.</p>
                 </div>
                 <div class="footer-contacts">
                     <h4 class="footer-subtitle">Контакты</h4>
-                    <p><i class="fas fa-map-marker-alt"></i> г. Казань, ул. Театральная, 1</p>
+                    <p><i class="fas fa-map-marker-alt"></i>Набережные Челны, ЗЯБ, Низаметдинова, 29</p>
                     <p><i class="fas fa-phone"></i> +7 (843) 123-45-67</p>
                     <p><i class="fas fa-envelope"></i> info@theatre.ru</p>
                 </div>
                 <div class="footer-hours">
                     <h4 class="footer-subtitle">Режим работы</h4>
                     <p>Касса: 10:00 - 19:00</p>
-                    <p>Спектакли: 18:30</p>
-                    <p>Выходной: понедельник</p>
+                    <p>Без выходных</p>
                 </div>
                 <div class="footer-social">
                     <h4 class="footer-subtitle">Мы в соцсетях</h4>

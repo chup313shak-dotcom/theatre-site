@@ -31,18 +31,23 @@
                         </td>
                         <td>{{ $user->phone ?? 'Не указан' }}</td>
                         <td>
-                            @if($user->isAdmin())
-                                <span class="badge badge-warning">Админ</span>
-                            @else
-                                <span class="badge badge-primary">Клиент</span>
-                            @endif
+                            <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="inline-role-form">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="name" value="{{ $user->name }}">
+                                <input type="hidden" name="email" value="{{ $user->email }}">
+                                
+                                <select name="role" onchange="this.form.submit()" 
+                                        class="form-control form-control-sm {{ $user->isAdmin() ? 'border-warning' : 'border-primary' }}"
+                                        {{ $user->id === Auth::id() ? 'disabled' : '' }}>
+                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Клиент</option>
+                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Админ</option>
+                                </select>
+                            </form>
                         </td>
                         <td>{{ $user->created_at->format('d.m.Y') }}</td>
                         <td class="text-right">
                             <div class="admin-actions">
-                                <a href="{{ route('admin.users.edit', $user->id) }}" class="action-btn edit-btn" title="Редактировать">
-                                    <i class="fas fa-user-edit"></i>
-                                </a>
                                 @if($user->id !== Auth::id())
                                 <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Вы уверены?')">
                                     @csrf

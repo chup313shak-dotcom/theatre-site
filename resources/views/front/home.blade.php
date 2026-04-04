@@ -230,7 +230,7 @@
                 <h2 class="subscription-title">Будьте в курсе событий</h2>
                 <p class="subscription-text">Подпишитесь на нашу рассылку, чтобы первыми узнавать о премьерах, специальных предложениях и новостях театра.</p>
                 
-                <form action="#" method="POST" class="subscription-form">
+                <form action="{{ route('subscribe') }}" method="POST" class="subscription-form">
                     @csrf
                     <div class="subscription-input-group">
                         <input type="email" name="email" placeholder="Ваш Email" required class="subscription-input">

@@ -66,6 +66,7 @@ Route::post('register', function (\Illuminate\Http\Request $request) {
 
 // ============ ПУБЛИЧНЫЕ МАРШРУТЫ ============
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/subscribe', [HomeController::class, 'subscribe'])->name('subscribe');
 Route::get('/spectacles', [SpectacleController::class, 'index'])->name('spectacles.index');
 Route::get('/spectacles/{id}', [SpectacleController::class, 'show'])->name('spectacles.show');
 Route::post('/spectacles/{id}/review', [SpectacleController::class, 'addReview'])->name('spectacles.review');

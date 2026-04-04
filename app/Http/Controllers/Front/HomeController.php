@@ -23,4 +23,15 @@ class HomeController extends Controller
 
         return view('front.home', compact('upcomingShows', 'news', 'actors'));
     }
+
+    public function subscribe(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Здесь можно добавить логику сохранения в БД
+        
+        return back()->with('success', 'Спасибо за подписку! Мы будем держать вас в курсе новостей.');
+    }
 }

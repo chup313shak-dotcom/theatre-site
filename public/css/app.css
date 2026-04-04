@@ -1105,8 +1105,19 @@ ul {
     color: var(--text-color);
 }
 
-.btn-block {
-    width: 100%;
+.form-control-sm {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    height: auto;
+    width: auto;
+    min-width: 120px;
+}
+
+.border-primary { border-color: var(--primary-color) !important; color: var(--primary-color); font-weight: 600; }
+.border-warning { border-color: #fbc02d !important; color: #fbc02d; font-weight: 700; }
+
+.inline-role-form {
+    display: inline-block;
 }
 
 .auth-footer {
