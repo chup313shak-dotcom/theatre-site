@@ -15,6 +15,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     @stack('styles')
+    <style>
+        .content-padding { padding-top: 30px; }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -82,7 +85,7 @@
     </header>
     
     <!-- Main Content -->
-    <main class="site-content">
+    <main class="site-content {{ Route::is('home') ? '' : 'content-padding' }}">
         @if(session('success'))
             <div class="container">
                 <div class="alert alert-success">
