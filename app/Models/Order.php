@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
+    const STATUS_PENDING = 'pending';
+    const STATUS_PAID = 'paid';
+    const STATUS_CANCELLED = 'cancelled';
+
     protected $fillable = [
         'user_id', 'customer_name', 'customer_email', 'customer_phone',
         'total_amount', 'status', 'payment_method', 'payment_id', 'payment_expires_at', 'metadata'
@@ -27,6 +31,16 @@ class Order extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function getStatusLabel()
+    {
+        return match($this->status) {
+            'pending' => 'В обработке',
+            'paid' => 'Оплачен',
+            'cancelled' => 'Отменен',
+            default => $this->status,
+        };
     }
 
     public function markAsPaid($paymentId = null)

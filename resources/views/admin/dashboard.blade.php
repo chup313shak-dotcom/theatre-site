@@ -74,7 +74,7 @@
                             <td>{{ number_format($order->total_amount, 0, '.', ' ') }} ₽</td>
                             <td>
                                 <span class="badge badge-{{ $order->status === 'paid' ? 'success' : ($order->status === 'pending' ? 'warning' : 'primary') }}">
-                                    {{ $order->status }}
+                                    {{ $order->getStatusLabel() }}
                                 </span>
                             </td>
                             <td>{{ $order->created_at->format('d.m.Y H:i') }}</td>

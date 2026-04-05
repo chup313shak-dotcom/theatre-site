@@ -21,11 +21,7 @@
         <aside class="admin-sidebar" :class="sidebarOpen ? 'open' : 'closed'">
             <div class="sidebar-header">
                 <a href="{{ route('home') }}" class="sidebar-logo">
-                    <i class="fas fa-theater-masks"></i>
-                    <div class="logo-info">
-                        <span class="logo-name">Театр им. Гилязова</span>
-                        <span class="logo-tag">Админ-панель</span>
-                    </div>
+                    <img src="{{ asset('images/logo.svg') }}" alt="Театр им. Гилязова" style="height: 35px; filter: brightness(0) invert(1);">
                 </a>
             </div>
             

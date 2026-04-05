@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Spectacle;
 use App\Models\News;
 use App\Models\Actor;
+use App\Models\Subscription;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -40,8 +42,25 @@ class HomeController extends Controller
             'email' => 'required|email'
         ]);
 
-        // Здесь можно добавить логику сохранения в БД
+        $email = $request->input('email');
         
-        return back()->with('success', 'Спасибо за подписку! Мы будем держать вас в курсе новостей.');
+        // Сохраняем в таблицу подписок
+        Subscription::updateOrCreate(
+            ['email' => $email],
+            [
+                'is_active' => true,
+                'user_id' => Auth::id()
+            ]
+        );
+
+        // Если пользователь авторизован, обновляем его флаг в таблице users
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->email === $email) {
+                $user->update(['is_subscribed' => true]);
+            }
+        }
+        
+        return back()->with('success', 'Вы успешно подписались на наши новости!');
     }
 }

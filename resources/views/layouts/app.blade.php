@@ -23,11 +23,7 @@
             <div class="header-content">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="logo">
-                    <i class="fas fa-theater-masks"></i>
-                    <div class="logo-text">
-                        <h1 class="logo-title">Татарский драматический</h1>
-                        <p class="logo-subtitle">театр им. Аяза Гилязова</p>
-                    </div>
+                    <img src="{{ asset('images/logo.svg') }}" alt="Театр им. Аяза Гилязова" style="height: 50px; filter: brightness(0) invert(1);">
                 </a>
                 
                 <!-- Navigation -->
