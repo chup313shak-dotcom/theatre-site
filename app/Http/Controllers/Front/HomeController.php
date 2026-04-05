@@ -24,6 +24,16 @@ class HomeController extends Controller
         return view('front.home', compact('upcomingShows', 'news', 'actors'));
     }
 
+    public function about()
+    {
+        return view('front.about');
+    }
+
+    public function contacts()
+    {
+        return view('front.contacts');
+    }
+
     public function subscribe(\Illuminate\Http\Request $request)
     {
         $request->validate([

@@ -35,8 +35,8 @@
                     <a href="{{ route('spectacles.index') }}" class="nav-link">Афиша</a>
                     <a href="{{ route('actors.index') }}" class="nav-link">Группа</a>
                     <a href="{{ route('news.index') }}" class="nav-link">Новости</a>
-                    <a href="/about" class="nav-link">О театре</a>
-                    <a href="/contacts" class="nav-link">Контакты</a>
+                    <a href="{{ route('about') }}" class="nav-link">О театре</a>
+                    <a href="{{ route('contacts') }}" class="nav-link">Контакты</a>
                 </nav>
                 
                 <!-- User Menu -->
