@@ -9,6 +9,7 @@ use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\ActorController;
 use App\Http\Controllers\Front\NewsController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Front\SubscribeController;
 
 // ============ АУТЕНТИФИКАЦИЯ ============
 // Маршруты для гостей
@@ -132,3 +133,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Пользователи
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
 });
+
+Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe');
