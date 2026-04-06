@@ -29,23 +29,33 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'name' => [
+            'required',
+            'string',
+            'max:255',
+            'regex:/^[^\d]+$/u', // не содержит ни одной цифры
+            'regex:/^[\p{L}\s\-]+$/u' // только буквы, пробелы, дефисы
+        ],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+    // Дополнительная проверка на всякий случай
+    if (preg_match('/\d/', $request->name)) {
+        return back()->withErrors(['name' => 'Имя не должно содержать цифр.']);
     }
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    event(new Registered($user));
+    Auth::login($user);
+
+    return redirect(RouteServiceProvider::HOME);
+}
 }

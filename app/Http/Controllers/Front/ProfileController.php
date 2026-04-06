@@ -79,11 +79,13 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[^0-9]+$/u'],
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
+        ], [
+            'name.regex' => 'Имя не должно содержать цифр.',
         ]);
         
         $user->name = $request->name;

@@ -48,9 +48,11 @@ Route::post('login', function (\Illuminate\Http\Request $request) {
 
 Route::post('register', function (\Illuminate\Http\Request $request) {
     $validated = $request->validate([
-        'name' => 'required|string|max:255',
+        'name' => ['required', 'string', 'max:255', 'regex:/^[^0-9]+$/u'],
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8|confirmed',
+    ], [
+        'name.regex' => 'Имя не должно содержать цифр.',
     ]);
     
     $user = \App\Models\User::create([
