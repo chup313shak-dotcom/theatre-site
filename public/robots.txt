@@ -1,2 +1,24 @@
+# Все поисковые роботы
 User-agent: *
-Disallow:
+
+# Запретить индексацию административной панели
+Disallow: /admin/
+Disallow: /admin
+# Запретить индексацию страниц авторизации и регистрации
+Disallow: /login
+Disallow: /register
+Disallow: /password/reset
+# Запретить индексацию личного кабинета и процесса оформления заказа
+Disallow: /profile/
+Disallow: /profile
+Disallow: /checkout/
+Disallow: /order/
+Disallow: /api/
+
+# Разрешить индексацию всех остальных разделов (афиша, актеры, новости)
+Allow: /spectacles/
+Allow: /actors/
+Allow: /news/
+Allow: /about
+Allow: /contacts
+Allow: /
