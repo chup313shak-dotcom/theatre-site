@@ -13,6 +13,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        //запрашиваем спектакли (Spectacle) вместе с их показами (with('shows'))
         $upcomingShows = Spectacle::with('shows')
             ->whereHas('shows', function ($query) {
                 $query->where('start_time', '>', now());
